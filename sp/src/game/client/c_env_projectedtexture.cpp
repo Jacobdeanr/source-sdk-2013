@@ -5,6 +5,7 @@
 //=============================================================================
 
 #include "cbase.h"
+#include "c_env_projectedtexture.h" //Include the new header
 #include "shareddefs.h"
 #include "materialsystem/imesh.h"
 #include "materialsystem/imaterial.h"
@@ -17,9 +18,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "16", FCVAR_CHEAT );
-static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.0005", FCVAR_CHEAT  );
-
+static ConVar mat_slopescaledepthbias_shadowmap( "mat_slopescaledepthbias_shadowmap", "3" );
+static ConVar mat_depthbias_shadowmap(	"mat_depthbias_shadowmap", "0.000001"  );
+/*
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -58,7 +59,7 @@ private:
 	char	m_SpotlightTextureName[ MAX_PATH ];
 	int		m_nSpotlightTextureFrame;
 	int		m_nShadowQuality;
-};
+};*/
 
 IMPLEMENT_CLIENTCLASS_DT( C_EnvProjectedTexture, DT_EnvProjectedTexture, CEnvProjectedTexture )
 	RecvPropEHandle( RECVINFO( m_hTargetEntity )	),
