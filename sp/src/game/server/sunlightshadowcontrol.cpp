@@ -37,6 +37,9 @@ public:
 	void	InputSetTexture( inputdata_t &inputdata );
 	void	InputSetEnableShadows( inputdata_t &inputdata );
 	void	InputSetLightColor( inputdata_t &inputdata );
+	void	InputSetFOV(inputdata_t &inputdata);
+	void	InputSetSunDistance(inputdata_t &inputdata);
+	void	InputSetNorthOffset(inputdata_t &inputdata);
 
 	virtual int	ObjectCaps( void ) { return BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 
@@ -78,7 +81,14 @@ BEGIN_DATADESC( CSunlightShadowControl )
 	DEFINE_INPUT( m_flSunDistance,		FIELD_FLOAT, "SetDistance" ),
 	DEFINE_INPUT( m_flFOV,				FIELD_FLOAT, "SetFOV" ),
 	DEFINE_INPUT( m_flNearZ,			FIELD_FLOAT, "SetNearZDistance" ),
-	DEFINE_INPUT( m_flNorthOffset,			FIELD_FLOAT, "SetNorthOffset" ),
+	DEFINE_INPUT(m_flNorthOffset, FIELD_FLOAT, "SetNorthOffset"),
+
+	//Input FOV
+	DEFINE_INPUTFUNC(FIELD_FLOAT, "FOV", InputSetFOV),
+	DEFINE_INPUTFUNC(FIELD_FLOAT, "SunDistance", InputSetSunDistance),
+	DEFINE_INPUTFUNC(FIELD_FLOAT, "NorthOffset", InputSetNorthOffset),
+
+
 
 	DEFINE_INPUTFUNC( FIELD_COLOR32, "LightColor", InputSetLightColor ),
 	DEFINE_INPUTFUNC( FIELD_STRING, "SetAngles", InputSetAngles ),
@@ -115,7 +125,7 @@ CSunlightShadowControl::CSunlightShadowControl()
 	m_LightColor.Init( 255, 255, 255, 1 );
 	m_flColorTransitionTime = 0.5f;
 	m_flSunDistance = 10000.0f;
-	m_flFOV = 50.0f;
+	m_flFOV = 10.0f;
 	m_bEnableShadows = false;
 }
 
@@ -249,4 +259,17 @@ void CSunlightShadowControl::InputSetEnableShadows( inputdata_t &inputdata )
 void CSunlightShadowControl::InputSetLightColor( inputdata_t &inputdata )
 {
 	m_LightColor = inputdata.value.Color32();
+}
+
+void CSunlightShadowControl::InputSetFOV(inputdata_t &inputdata)
+{
+	m_flFOV = inputdata.value.Float();
+}
+void CSunlightShadowControl::InputSetSunDistance(inputdata_t &inputdata)
+{
+	m_flSunDistance = inputdata.value.Float();
+}
+void CSunlightShadowControl::InputSetNorthOffset(inputdata_t &inputdata)
+{
+	m_flNorthOffset = inputdata.value.Float();
 }
