@@ -1883,6 +1883,9 @@
     <ClInclude Include="c_env_projectedtexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="c_sunlightshadowcontrol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mp3player.cpp">

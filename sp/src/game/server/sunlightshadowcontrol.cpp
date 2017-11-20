@@ -41,6 +41,9 @@ public:
 	void	InputSetSunDistance(inputdata_t &inputdata);
 	void	InputSetNorthOffset(inputdata_t &inputdata);
 
+	//Be able to change shadowmap resolution?
+	void	InputSetDepthRes(inputdata_t &inputdata);
+
 	virtual int	ObjectCaps( void ) { return BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 
 	DECLARE_SERVERCLASS();
@@ -60,6 +63,10 @@ private:
 	CNetworkVar( float, m_flNearZ );
 	CNetworkVar( float, m_flNorthOffset );
 	CNetworkVar( bool, m_bEnableShadows );
+
+	//Be able to change shadowmap resolution?
+	CNetworkVar(int, m_flShadowMapResolution);
+	
 };
 
 LINK_ENTITY_TO_CLASS(sunlight_shadow_control, CSunlightShadowControl);
@@ -77,6 +84,9 @@ BEGIN_DATADESC( CSunlightShadowControl )
 	DEFINE_FIELD( m_LightColor, FIELD_COLOR32 ), 
 	DEFINE_KEYFIELD( m_flColorTransitionTime, FIELD_FLOAT, "colortransitiontime" ),
 
+	//Be able to change shadowmap resolution?
+	DEFINE_KEYFIELD(m_flShadowMapResolution, FIELD_INTEGER, "shadowmapresolution"),
+
 	// Inputs
 	DEFINE_INPUT( m_flSunDistance,		FIELD_FLOAT, "SetDistance" ),
 	DEFINE_INPUT( m_flFOV,				FIELD_FLOAT, "SetFOV" ),
@@ -87,6 +97,10 @@ BEGIN_DATADESC( CSunlightShadowControl )
 	DEFINE_INPUTFUNC(FIELD_FLOAT, "FOV", InputSetFOV),
 	DEFINE_INPUTFUNC(FIELD_FLOAT, "SunDistance", InputSetSunDistance),
 	DEFINE_INPUTFUNC(FIELD_FLOAT, "NorthOffset", InputSetNorthOffset),
+
+
+	//Be able to change shadowmap resolution?
+	DEFINE_INPUTFUNC(FIELD_FLOAT, "DepthResolution", InputSetDepthRes),
 
 
 
@@ -112,6 +126,9 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE(CSunlightShadowControl, DT_SunlightShadowControl
 	SendPropFloat(SENDINFO(m_flNearZ), 0, SPROP_NOSCALE ),
 	SendPropFloat(SENDINFO(m_flNorthOffset), 0, SPROP_NOSCALE ),
 	SendPropBool( SENDINFO( m_bEnableShadows ) ),
+
+	//Be able to change shadowmap resolution?
+	SendPropInt(SENDINFO(m_flShadowMapResolution)),
 END_SEND_TABLE()
 
 
@@ -127,6 +144,7 @@ CSunlightShadowControl::CSunlightShadowControl()
 	m_flSunDistance = 10000.0f;
 	m_flFOV = 10.0f;
 	m_bEnableShadows = false;
+	m_flShadowMapResolution = 512;
 }
 
 
@@ -272,4 +290,9 @@ void CSunlightShadowControl::InputSetSunDistance(inputdata_t &inputdata)
 void CSunlightShadowControl::InputSetNorthOffset(inputdata_t &inputdata)
 {
 	m_flNorthOffset = inputdata.value.Float();
+}
+
+void CSunlightShadowControl::InputSetDepthRes(inputdata_t &inputdata)
+{
+	m_flShadowMapResolution = inputdata.value.Int();
 }

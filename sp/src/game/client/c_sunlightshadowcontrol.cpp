@@ -7,6 +7,7 @@
 #include "cbase.h"
 
 #include "c_baseplayer.h"
+#include "c_sunlightshadowcontrol.h"
 #ifdef INFESTED_DLL
 #include "c_asw_marine.h"
 #endif
@@ -17,44 +18,8 @@
 extern ConVar cl_globallight_xoffset;
 extern ConVar cl_globallight_yoffset;
 ConVar cl_sunlight_ortho_size("cl_sunlight_ortho_size", "0.0", FCVAR_CHEAT, "Set to values greater than 0 for ortho view render projections.");
-ConVar cl_sunlight_depthbias( "cl_sunlight_depthbias", "0.02" );
-
-//------------------------------------------------------------------------------
-// Purpose : Sunlights shadow control entity
-//------------------------------------------------------------------------------
-class C_SunlightShadowControl : public C_BaseEntity
-{
-public:
-	DECLARE_CLASS( C_SunlightShadowControl, C_BaseEntity );
-
-	DECLARE_CLIENTCLASS();
-
-	virtual ~C_SunlightShadowControl();
-
-	void OnDataChanged( DataUpdateType_t updateType );
-	void Spawn();
-	bool ShouldDraw();
-
-	void ClientThink();
-
-private:
-	Vector m_shadowDirection;
-	bool m_bEnabled;
-	char m_TextureName[ MAX_PATH ];
-	CTextureReference m_SpotlightTexture;
-	color32	m_LightColor;
-	Vector m_CurrentLinearFloatLightColor;
-	float m_flCurrentLinearFloatLightAlpha;
-	float m_flColorTransitionTime;
-	float m_flSunDistance;
-	float m_flFOV;
-	float m_flNearZ;
-	float m_flNorthOffset;
-	bool m_bEnableShadows;
-	bool m_bOldEnableShadows;
-
-	static ClientShadowHandle_t m_LocalFlashlightHandle;
-};
+ConVar cl_sunlight_depthbias( "cl_sunlight_depthbias", "3" );
+ConVar cl_sunlight_slopebias("cl_sunlight_slopebias", ".001");
 
 
 ClientShadowHandle_t C_SunlightShadowControl::m_LocalFlashlightHandle = CLIENTSHADOW_INVALID_HANDLE;
@@ -72,6 +37,9 @@ IMPLEMENT_CLIENTCLASS_DT(C_SunlightShadowControl, DT_SunlightShadowControl, CSun
 	RecvPropFloat(RECVINFO(m_flNearZ)),
 	RecvPropFloat(RECVINFO(m_flNorthOffset)),
 	RecvPropBool(RECVINFO(m_bEnableShadows)),
+
+	//Be able to change shadowmap resolution??
+	RecvPropInt(RECVINFO(m_flShadowMapResolution)),
 END_RECV_TABLE()
 
 
@@ -198,6 +166,9 @@ void C_SunlightShadowControl::ClientThink()
 		state.m_NearZ = fpmax( 4.0f, m_flSunDistance - m_flNearZ );
 		//state.m_FarZ = m_flSunDistance + 300.0f;
 
+		//Be able to change shadowmap resolution?
+		//state.m_flShadowMapResolution = m_flShadowMapResolution/2048.0f;
+
 		/*float flOrthoSize = cl_sunlight_ortho_size.GetFloat();
 
 		if ( flOrthoSize > 0 )
@@ -213,8 +184,8 @@ void C_SunlightShadowControl::ClientThink()
 			state.m_bOrtho = false;
 		}
 		*/
-		state.m_flShadowSlopeScaleDepthBias = 2;
-		state.m_flShadowDepthBias = cl_sunlight_depthbias.GetFloat();
+		state.m_flShadowSlopeScaleDepthBias = cl_sunlight_depthbias.GetFloat();
+		state.m_flShadowDepthBias = cl_sunlight_slopebias.GetFloat();
 		state.m_bEnableShadows = m_bEnableShadows;
 		state.m_pSpotlightTexture = m_SpotlightTexture;
 		//state.m_pProjectedMaterial = NULL;
