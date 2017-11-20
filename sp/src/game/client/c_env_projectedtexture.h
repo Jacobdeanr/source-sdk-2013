@@ -53,7 +53,7 @@ private:
 	float	m_flAmbient;
 	float	m_flNearZ;
 	float	m_flFarZ;
-	char	m_SpotlightTextureName[MAX_PATH];
+	char	m_SpotlightTextureName[ MAX_PATH ];
 	int		m_nSpotlightTextureFrame;
 	int		m_nShadowQuality;
 
